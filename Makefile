@@ -1,6 +1,6 @@
 # makefile to automatize simple operations
 
-server:
+server: 
 	python -m SimpleHTTPServer
 
 deploy:
