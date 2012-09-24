@@ -1,4 +1,3 @@
-ongamestart.us
-==============
-
-homepage of http://ongamestart.us
+### TODO
+* make earth texture smallers
+* make space background poweroftwo

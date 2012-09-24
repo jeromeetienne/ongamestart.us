@@ -1,0 +1,15 @@
+<!doctype html><title>Minimal tQuery Page</title>
+<script src="../../../build/tquery-bundle.js"></script>
+<script src="../../planets/tquery.createplanet.js"></script>
+
+<body><script>
+	var world	= tQuery.createWorld().boilerplate().start();
+	// create the planet
+	var planet	= tQuery.createPlanet('moon').addTo(world);
+
+	// make the object rotate
+	world.loop().hook(function(delta, now){
+		var angle	= 0.05 * now * Math.PI * 2;
+		planet.get(0).rotation.y	= angle;
+	});
+</script></body>

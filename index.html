@@ -1,0 +1,145 @@
+<!doctype html><title>onGameStart US</title>
+<script src="vendor/tquery-bundle.js"></script>
+
+<script src="vendor/skymap/tquery.skymap.js"></script>
+<script src="vendor/skymap/tquery.cubetexture.js"></script>
+
+<script src="vendor/text/fonts/droid/droid_serif_bold.typeface.js"></script>
+<script src="vendor/text/fonts/gentilis_regular.typeface.js"></script>
+<script src="vendor/text/tquery.text.js"></script>
+
+<script src="vendor/planets/tquery.createplanet.js"></script>
+
+<script src="vendor/domevent/threex.domevent.js"></script>
+<script src="vendor/domevent/tquery.domevent.js"></script>
+<script src="vendor/linkify/tquery.mesh.linkify.js"></script>
+
+<body><script>
+	// create the world
+	var world	= tQuery.createWorld().boilerplate().start();
+
+	// setup light
+	tQuery.createDirectionalLight().addTo(world).position(1,1,1);
+	tQuery.createDirectionalLight().addTo(world).position(-1,0,1);
+	tQuery.createAmbientLight().addTo(world).color(0xFFFFFF); 
+
+	//////////////////////////////////////////////////////////////////////////
+	//		Handle planet						//
+	//////////////////////////////////////////////////////////////////////////	
+
+	tQuery.createPlanet.baseUrl	= "vendor/planets/";
+	
+	// add planets
+	var planet	= tQuery.createPlanet('earthNormal').id('planet').addTo(world);
+	//var planet	= tQuery.createPlanet('earth').addTo(world);
+	planet.get(0).eulerOrder = 'XZY';
+
+	var cloud	= tQuery('#planet .cloud');
+	// make the object rotate
+	world.loop().hook(function(delta, now){
+		// handle planet rotation
+		var angle	= 0.1 * now * Math.PI * 2;
+		planet.get(0).rotation.y	= -angle;
+		planet.get(0).rotation.z	= 23.1 * Math.PI/180;
+
+		// handle planet revolution
+		var angle	= 0.05 * now * Math.PI * 2;
+		planet.get(0).position.x = 2.0 * Math.cos(angle);
+		planet.get(0).position.y = 0.5 * Math.cos(angle+Math.PI/2);
+		planet.get(0).position.z = 1.0 * Math.sin(angle);
+		
+		// handle rotation cloud
+		var angle	= 0.01 * now * Math.PI * 2;
+		cloud.get(0).rotation.y	= angle; 
+	});
+
+	//////////////////////////////////////////////////////////////////////////
+	//		Handle camera control					//
+	//////////////////////////////////////////////////////////////////////////
+
+	// make camera controls go smoother
+	var controls	= tQuery.world.getCameraControls();
+	controls.rangeX	*= 0.03;
+	controls.rangeY	*= 0.05;
+	
+	//////////////////////////////////////////////////////////////////////////
+	//		Handle skymap						//
+	//////////////////////////////////////////////////////////////////////////	
+	
+	// add a skymap
+	var urls	= [
+		'images/space_background2006_2.jpg',
+		'images/space_background2006_2.jpg',
+		'images/space_background2006_2.jpg',
+		'images/space_background2006_2.jpg',
+		'images/space_background2006_2.jpg',
+		'images/space_background2006_2.jpg',
+	];
+	var skymap	= tQuery.createSkymap({
+		textureCube	: urls
+	}).addTo(world);
+
+	//////////////////////////////////////////////////////////////////////////
+	//		Handle 'preregister' button				//
+	//////////////////////////////////////////////////////////////////////////
+	
+	// enable domEvent on this world
+	world.enableDomEvent();
+	var urlsRoot	= 'images/cubemap_mars/mars_';
+	var ext		= 'jpg';
+	var urls	= [
+		urlsRoot + 'positive_x.'+ext,
+		urlsRoot + 'negative_x.'+ext,
+		urlsRoot + 'positive_y.'+ext,
+		urlsRoot + 'negative_y.'+ext,
+		urlsRoot + 'positive_z.'+ext,
+		urlsRoot + 'negative_z.'+ext
+	];
+	var textEnvMap	= tQuery.createCubeTexture(urls);
+	var button	= tQuery.createText("PreRegister", {
+		bevelThickness	: 0.1,
+		bevelSize	: 0.02,
+		bevelEnabled	: true,
+	}).addTo(world)
+		.scaleBy(1/10)
+		.translateY(-0.7)
+		.setLambertMaterial({
+			envMap	: textEnvMap,
+			color	: 0x5577ff
+		}).back()
+		.linkify('http://onGameStart.com/');
+
+	//////////////////////////////////////////////////////////////////////////
+	//		Handle text						//
+	//////////////////////////////////////////////////////////////////////////	
+
+	// create the text
+	var text	= tQuery.createObject3D().addTo(world)
+				.translateY(0.2)				
+	tQuery.createText("onGameStart US", {
+		bevelThickness	: 0.1,
+		bevelSize	: 0.03,
+		bevelEnabled	: true,
+	}).addTo(text)
+		.scaleBy(1/4)
+		.setPhongMaterial({
+			ambient	: 0xaaaaaa,
+			color	: 0xaaaaaa,
+			envMap	: textEnvMap
+		}).back()
+	tQuery.createText("New York, March 2013", {
+		font	: "gentilis",
+		weight	: 'normal',
+		bevelThickness	: 0.1,
+		bevelSize	: 0.02,
+		bevelEnabled	: true,
+	}).addTo(text)
+		.scaleBy(1/8)
+		.translateY(-0.2)
+		.translateX(0.65)
+		.setPhongMaterial({
+			ambient	: 0xaaaaaa,
+			color	: 0xaaaaaa,
+			envMap	: textEnvMap
+		}).back()
+</script></body>
